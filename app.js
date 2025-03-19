@@ -1,45 +1,48 @@
 //O principal objetivo deste desafio é fortalecer suas habilidades em lógica de programação. Aqui você deverá desenvolver a lógica para resolver o problema.
 
-function RNG(min, max) {
-    return Math.round(Math.random() * (max - min)) + min;
-}
-
 let campoNome = document.getElementById('amigo');
 let textoErro = document.getElementById('error');
 let listaAmigos = document.getElementById('listaAmigos');
 let listaSorteados = document.getElementById('resultado');
 let sorteado = false;
-
 let arrayNomes = [];
 
-listaAmigos.innerHTML = '';
+function RNG(min, max) {
+    return Math.round(Math.random() * (max - min)) + min;
+}
+
+function itemLista(item) {
+    return `<li>${item}</li>`
+}
 
 function adicionarAmigo() {
     let nome = campoNome.value;
-    if (nome != '') {
-        if (!arrayNomes.includes(nome)) {
-            listaAmigos.innerHTML += `<li>${nome}</li>`;
-            arrayNomes.push(nome);
-            console.log(arrayNomes);
-            campoNome.value = '';
-            textoErro.innerHTML = '';
-        } else {
-            textoErro.innerHTML = 'Por favor, insira um nome diferente.';
-        }
-    } else {
-        textoErro.innerHTML = 'Por favor, insira um nome.';
+    if (nome != '' && !arrayNomes.includes(nome)) {
+        sorteado = false;
+        listaSorteados.innerHTML = '';
+        listaAmigos.innerHTML += itemLista(nome);
+        arrayNomes.push(nome);
+        // console.log(arrayNomes);
+        campoNome.value = '';
+        erro('');
+        return;
     }
+    let diff = arrayNomes.includes(nome) ? ' diferente' : '';
+    erro(`Por favor, insira um nome${diff}.`);
 }
 
 function sortearAmigo() {
     if (arrayNomes.length > 0 && !sorteado.valueOf()) {
         sorteado = true;
-        textoErro.innerHTML = '';
-        let max = arrayNomes.length - 1;
+        erro('');
         listaAmigos.innerHTML = '';
-        listaSorteados.innerHTML += `<li>${arrayNomes[RNG(0,max)]}</li>`;
+        listaSorteados.innerHTML += itemLista(arrayNomes[RNG(0, arrayNomes.length - 1)]);
         arrayNomes = [];
-    } else {
-        textoErro.innerHTML = 'Por favor, insira um nome.';
+        return;
     }
+    erro('Por favor, insira um nome.');
+}
+
+function erro(text) {
+    textoErro.innerHTML = text;
 }
